@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Link Test</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { background: #5568d3; }
+        .link {
+            background: #f0f0f0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        h2 { color: #667eea; }
+    </style>
+</head>
+<body>
+    <h1>🔗 Storm Breaker - Link Test</h1>
+    
+    <div class="box">
+        <h2>Step 1: Generate Encrypted Links</h2>
+        <button onclick="loadLinks()">Load All Templates</button>
+        <div id="linksList"></div>
+    </div>
+    
+    <div class="box">
+        <h2>Step 2: Test Individual Links</h2>
+        <p>Click "Test" to open in new tab, or "Copy" to copy link</p>
+        <div id="testLinks"></div>
+    </div>
+    
+    <div class="box">
+        <h2>Debug Info</h2>
+        <div id="debugInfo"></div>
+    </div>
+
+    <script src="./assets/js/jquery.min.js"></script>
+    <script>
+        function loadLinks() {
+            $('#linksList').html('<p>Loading...</p>');
+            $('#debugInfo').html('<p>Fetching from generate_links.php...</p>');
+            
+            $.ajax({
+                url: 'generate_links.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Response:', response);
+                    $('#debugInfo').html('<p class="success">✓ Successfully loaded ' + Object.keys(response.templates).length + ' templates</p>');
+                    $('#debugInfo').append('<p>Base URL: ' + response.base_url + '</p>');
+                    
+                    let html = '<table style="width:100%; border-collapse: collapse;">';
+                    html += '<tr style="background:#667eea;color:white;"><th style="padding:10px;">Template</th><th>Encrypted URL</th></tr>';
+                    
+                    let testHtml = '';
+                    
+                    for (let key in response.templates) {
+                        let t = response.templates[key];
+                        html += '<tr style="border-bottom:1px solid #ddd;">';
+                        html += '<td style="padding:10px;"><strong>' + t.name + '</strong><br><small>' + t.desc + '</small></td>';
+                        html += '<td style="padding:10px;"><div class="link">' + t.url + '</div></td>';
+                        html += '</tr>';
+                        
+                        testHtml += '<div style="background:#f9f9f9;padding:15px;margin:10px 0;border-radius:5px;">';
+                        testHtml += '<h3>' + t.name + '</h3>';
+                        testHtml += '<div class="link">' + t.url + '</div>';
+                        testHtml += '<button onclick="window.open(\'' + t.url + '\', \'_blank\')">🔗 Test Link</button>';
+                        testHtml += '<button onclick="copyText(\'' + t.url + '\')">📋 Copy</button>';
+                        testHtml += '</div>';
+                    }
+                    html += '</table>';
+                    
+                    $('#linksList').html(html);
+                    $('#testLinks').html(testHtml);
+                },
+                error: function(xhr, status, error) {
+                    $('#linksList').html('<p class="error">✗ Error loading links: ' + error + '</p>');
+                    $('#debugInfo').html('<p class="error">AJAX Error: ' + status + '<br>Details: ' + error + '</p>');
+                    console.error('Error:', xhr.responseText);
+                }
+            });
+        }
+        
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('✓ Link copied to clipboard!');
+            }, function(err) {
+                alert('✗ Failed to copy: ' + err);
+            });
+        }
+        
+        // Auto-load on page load
+        $(document).ready(function() {
+            loadLinks();
+        });
+    </script>
+</body>
+</html>

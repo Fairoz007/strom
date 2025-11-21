@@ -1,7 +1,11 @@
 <?php
 // URL Generator with Encryption
 define('ENCRYPTION_KEY', 'StormBreaker2025SecretKey!@#');
-define('BASE_URL', 'http://cam.fairoz.in');
+
+// Auto-detect base URL
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'];
+define('BASE_URL', $protocol . '://' . $host);
 
 function encryptUrl($url) {
     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));

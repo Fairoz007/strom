@@ -462,14 +462,17 @@ else {
         
         <!-- Quick Action Buttons -->
         <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="btn-primary-modern btn-modern" onclick="location.href='template-selector.php'">
+                <i class="fas fa-th-large"></i> Template Selector
+            </button>
             <button class="btn-primary-modern btn-modern" onclick="location.href='gallery.php'">
-                <i class="fas fa-images"></i> View Image Gallery
+                <i class="fas fa-images"></i> Image Gallery
             </button>
             <button class="btn-success-modern btn-modern" onclick="checkCapturedData()">
-                <i class="fas fa-database"></i> View All Captures
+                <i class="fas fa-database"></i> All Captures
             </button>
             <button class="btn-warning-modern btn-modern" onclick="generateNewLink()">
-                <i class="fas fa-plus"></i> Generate New Link
+                <i class="fas fa-plus"></i> Generate Link
             </button>
         </div>
         

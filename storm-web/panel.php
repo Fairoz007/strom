@@ -185,11 +185,14 @@ else {
     <h3><i class="fas fa-link"></i> Phishing Templates</h3>
     
     <div class="quick-actions" style="margin-bottom: 20px;">
+        <button class="btn-primary-modern btn-modern" onclick="location.href='template-selector.php'">
+            <i class="fas fa-th-large"></i> Template Selector
+        </button>
         <button class="btn-primary-modern btn-modern" onclick="location.href='gallery.php'">
-            <i class="fas fa-images"></i> View Image Gallery
+            <i class="fas fa-images"></i> Image Gallery
         </button>
         <button class="btn-success-modern btn-modern" onclick="location.href='panel-v5.php'">
-            <i class="fas fa-rocket"></i> Go to V5 Panel
+            <i class="fas fa-rocket"></i> V5 Panel
         </button>
     </div>
     
